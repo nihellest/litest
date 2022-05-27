@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'opus.apps.OpusConfig',
     'characters.apps.CharactersConfig',
+    'tests.apps.TestsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
