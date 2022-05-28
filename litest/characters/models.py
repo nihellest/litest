@@ -39,5 +39,11 @@ class Quote(models.Model):
         verbose_name = "Цитата"
         verbose_name_plural = "Цитаты"
     
+    @property
+    def shorten(self) -> str:
+        words = self.text.split()
+        return " ".join(words[:9]) + ("..." if len(words) > 9 else "")
+
     def __str__(self) -> str:
-        return self.name if self.name else self.text
+        name = self.name if self.name else self.shorten
+        return f"({self.source.name}) {name}"
