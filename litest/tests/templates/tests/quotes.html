@@ -5,15 +5,21 @@
         <p>
             Ответы: {{ correct_count }} / {{ questions_count }}
         </p>
-        </hr>
         <p>
-            {{ question.quote.text }}
+            {% if result %}
+                {% if result.correct  %}
+                    Ответ "{{ result.correct_answer }}" верный!
+                {% else %}
+                    Ответ неверный, правильный ответ &mdash; "{{ result.correct_answer }}"
+                {% endif %}
+            {% endif %}
+            </hr>
         </p>
-        {% for answer in question.get_answers %}
-            {{ answer.name }}
-        {% endfor %}
+        <p>
+            {{ form.question.quote.text }}
+        </p>
         {{ form }}
-        <input type="hidden" name="question_id" value="{{ question.id }}">
+        <input type="hidden" name="question_id" value="{{ form.question.id }}">
         <input type="hidden" name="correct_count" value="{{ correct_count }}">
         <input type="hidden" name="questions_count" value="{{ questions_count }}">
 
