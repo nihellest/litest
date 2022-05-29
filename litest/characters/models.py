@@ -31,6 +31,7 @@ class CharacterTag(models.Model):
 
 
 class Quote(models.Model):
+    """Model for a character's quotes"""
     name = models.CharField(max_length=128, null=True, blank=True, verbose_name="Название цитаты")
     source = models.ForeignKey(Character, on_delete=models.CASCADE, verbose_name="Источник цитаты")
     text = models.TextField(verbose_name="Текст")
@@ -38,11 +39,14 @@ class Quote(models.Model):
     class Meta:
         verbose_name = "Цитата"
         verbose_name_plural = "Цитаты"
-    
+        
     @property
     def shorten(self) -> str:
+        """Shorten text for a pretty quotes view in lists"""
+        # TODO: Move constant to settings
+        SHORTEN_LENGTH = 9
         words = self.text.split()
-        return " ".join(words[:9]) + ("..." if len(words) > 9 else "")
+        return " ".join(words[:SHORTEN_LENGTH]) + ("..." if len(words) > SHORTEN_LENGTH else "")
 
     def __str__(self) -> str:
         name = self.name if self.name else self.shorten

@@ -1,5 +1,11 @@
+# IDE's dirs
+.idea/
+.vscode/
+
+# Py stuff
 __pycache__/
 venv/
 *.pyc
 
+# DBs
 *.sqlite3

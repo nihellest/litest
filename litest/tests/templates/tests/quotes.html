@@ -1,0 +1,23 @@
+<h1>Тест на знание цитат</h1>
+<div>
+    <form action="/test/quotes/" method="post">
+        {% csrf_token %}
+        <p>
+            Ответы: {{ correct_count }} / {{ questions_count }}
+        </p>
+        </hr>
+        <p>
+            {{ question.quote.text }}
+        </p>
+        {% for answer in question.get_answers %}
+            {{ answer.name }}
+        {% endfor %}
+        {{ form }}
+        <input type="hidden" name="question_id" value="{{ question.id }}">
+        <input type="hidden" name="correct_count" value="{{ correct_count }}">
+        <input type="hidden" name="questions_count" value="{{ questions_count }}">
+
+        <input type="submit" value="Проверить">
+    </form>
+</div>
+
