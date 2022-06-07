@@ -31,15 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'opus.apps.OpusConfig',
-    'characters.apps.CharactersConfig',
-    'tests.apps.TestsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tests.apps.TestsConfig',
+    'writings.apps.WritingsConfig',
 ]
 
 MIDDLEWARE = [
