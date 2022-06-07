@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import Character, CharacterTag, Quote
+
+from .models import *
 
 admin.site.register((
+    Author,
+    Writing,
     Character,
     CharacterTag,
     Quote,

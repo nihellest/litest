@@ -1,6 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
-from characters.models import Quote, Character
+from writings.models import Quote, Character
 from random import shuffle
 from typing import Union
 import logging
