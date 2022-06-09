@@ -12,6 +12,35 @@
 <br />
 
 <div class="row">
+    <div class="col-md-7">
+        <ul class="pagination">
+            {% for question in run.questions  %}
+                {% if forloop.counter0 == run.current_index %}
+                <li class="active">
+                {% else %}
+                <li class="disabled">
+                {% endif %}
+                {% if forloop.counter0 > run.current_index %}
+                    <span class="glyphicon glyphicon-unchecked" />
+                {% elif forloop.counter0 == run.current_index  %}
+                    <span class="glyphicon glyphicon-pencil" />
+                {% else %}
+                    {% if question.is_correct == True %}
+                    <span class="glyphicon glyphicon-ok" />
+                    {% else %}
+                    <span class="glyphicon glyphicon-remove" />
+                    {% endif %}
+                {% endif %}
+                    <span>
+                        {{ forloop.counter }}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
 
     <div class="col-md-7">
         <blockquote>
