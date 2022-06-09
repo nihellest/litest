@@ -7,6 +7,7 @@ from typing import (
 
 from django.db import models
 from django.http import HttpRequest
+from django.contrib.sessions.backends.base import SessionBase
 from .models import QuoteQuestion
 from .forms import QuestionForm
 
@@ -77,13 +78,18 @@ class TestService:
     
     def get_run_context(self, request: HttpRequest) -> Dict[str, Any]:
         """Return Dict context for test's run"""
-
-        run = self._extract_test_context(request)
-        answers = self._extract_answers(request)
+        
+        request.session.modified = False
+        run = self._extract_test_context(session=request.session)
+        answers = self._extract_answers(request=request)
         if run == None:
             run = self._new_run()
         if answers:
             run = self._update_run(run, answers)
+
+        # Store run data to session
+        self._write_session_context(session=request.session, run=run)
+
         form = self._get_form(self._get_current_question(run))
         
         return {
@@ -92,15 +98,32 @@ class TestService:
             'form': form,
         }
     
-    def refresh_context(self, request: HttpRequest) -> None:
-        ...
+    def refresh_context(self, session: SessionBase) -> None:
+        """Clear from session test related data"""
 
-    def _extract_test_context(self, request: HttpRequest) -> Optional[Dict[str, Any]]:
+        if self._session_has_context(session):
+            del session[self._session_key]
+
+    @property
+    def _session_key(self):
+        return f'{self.TESTS_SESSION_KEY}_{self.name}'
+
+    def _session_has_context(self, session: SessionBase) -> bool:
+        """Check presence of test related data in session"""
+
+        return self._session_key in session
+    
+    def _write_session_context(self, session: SessionBase, run: dict) -> None:
+        """Write current run data into session"""
+
+        session[self._session_key] = run
+        
+
+    def _extract_test_context(self, session: SessionBase) -> Optional[Dict[str, Any]]:
         """Метод извлекающий существующий контекст из текущей сессии"""
 
-        if self.TESTS_SESSION_KEY in request.session:
-            if self.name in request.session[self.TESTS_SESSION_KEY]:
-                return request.session[self.TESTS_SESSION_KEY][self.name]
+        if self._session_has_context(session):
+            return session[self._session_key]
         return None
 
     @staticmethod

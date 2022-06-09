@@ -34,7 +34,7 @@ def GenericTestRun(request: HttpRequest, test_name: str) -> HttpResponse:
     
     # Is new run?
     if request.method == 'GET' and 'new' in request.GET:
-        service.refresh_context(request)
+        service.refresh_context(request.session)
         return redirect(GenericTestRun, test_name=test_name)
     
     context: Dict[str, Any] = service.get_run_context(request)
