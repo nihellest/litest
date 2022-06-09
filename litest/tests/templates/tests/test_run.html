@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="container-fluid">
+            <h1>Тест на знание цитат</h1>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+
+    <div class="col-md-7">
+        <blockquote>
+            <p>
+            {{ form.question.text }}
+            </p>
+        </blockquote>
+    </div>
+
+    <div class="col-md-5">
+        <form action="/test/{{ test_name }}/" method="post">
+            {% csrf_token %}
+            
+            {% for answer in form.answers %}
+                <p>{{ answer }}</p>
+            {% endfor %}
+
+            <p><input type="submit" value="Проверить" class="btn btn-primary btn-lg"></p>
+
+            <input type="hidden" name="question_id" value="{{ form.question.question_id }}">
+        </form>
+    </div>
+
+</div>
+
+<br />
+
+<div class="row">  
+    <div class="col-md-3">
+        <div class="alert alert-info">
+            Ответы: {{ correct_count }} / {{ questions_count }}
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% if result %}
+            {% if result.correct  %}
+                <div class="alert alert-success">
+                    Ответ "{{ result.correct_answer }}" верный!
+                </div>
+            {% else %}
+                <div class="alert alert-danger">
+                    Ответ неверный, правильный ответ &mdash; "{{ result.correct_answer }}"
+                </div
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<br />
+
+{% for question in run.questions %}
+<p>{{ question }}</p>
+{% endfor %}
+<p>{{ run.current_index }}</p>
+
+{% endblock content %}

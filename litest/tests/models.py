@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ValidationError
 from writings.models import Quote, Character
 from random import shuffle
-from typing import Union
+from typing import Union, Tuple
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,19 @@ class QuoteQuestion(models.Model):
         return str(self.quote)
 
     @property
-    def get_answers(self):
+    def text(self):
+        return self.quote.text
+
+    @property
+    def as_dict(self):
+        return {
+            'question_id': self.pk,
+            'text': self.text,
+            'answers': self.get_answers,
+        }
+
+    @property
+    def get_answers(self) -> Tuple[int, str]:
         characters = list(self.alt_answers.all())
         characters.append(self.correct_answer)
         answers = [(character.id, character.name) for character in characters]
