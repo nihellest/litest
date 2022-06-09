@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="container-fluid">
+            <h1>Тест на знание цитат</h1>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-md-7">
+        <ul class="pagination">
+            {% for question in run.questions  %}
+                {% if forloop.counter0 == run.current_index %}
+                <li class="active">
+                {% else %}
+                <li class="disabled">
+                {% endif %}
+                {% if forloop.counter0 > run.current_index %}
+                    <span class="glyphicon glyphicon-unchecked" />
+                {% elif forloop.counter0 == run.current_index  %}
+                    <span class="glyphicon glyphicon-pencil" />
+                {% else %}
+                    {% if question.is_correct == True %}
+                    <span class="glyphicon glyphicon-ok" />
+                    {% else %}
+                    <span class="glyphicon glyphicon-remove" />
+                    {% endif %}
+                {% endif %}
+                    <span>
+                        {{ forloop.counter }}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-7">
+        <blockquote>
+            <p>
+            {{ form.question.text }}
+            </p>
+        </blockquote>
+    </div>
+
+    <div class="col-md-5">
+        <form action="/test/{{ test_name }}/run/" method="post">
+            {% csrf_token %}
+            
+            {% for answer in form.answers %}
+                <p>{{ answer }}</p>
+            {% endfor %}
+            <br />
+            <p><input type="submit" value="Проверить" class="btn btn-primary btn-lg"></p>
+
+            <input type="hidden" name="question_id" value="{{ form.question.question_id }}">
+        </form>
+    </div>
+
+</div>
+
+<br />
+
+{% endblock content %}

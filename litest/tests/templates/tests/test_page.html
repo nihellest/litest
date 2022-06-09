@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="well text-center">
+        {% if run %}
+        <a class="btn btn-primary btn-lg" href="/test/{{ test_name }}/run/?new">Начать новый тест</a>
+        <a class="btn btn-primary btn-lg" href="/test/{{ test_name }}/run/">Продолжить тест</a>
+        {% else %}
+        <a class="btn btn-primary btn-lg" href="/test/{{ test_name }}/run/?new">Начать тест</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
