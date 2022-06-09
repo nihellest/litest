@@ -31,6 +31,10 @@ class TestDataService:
             count = len(all_questions)
         questions = [q.as_dict for q in sample(all_questions, count)]
         return questions
+    
+    def check_answer(self, question_id: int, answer_id: int) -> bool:
+        question = self.model.objects.get(pk=question_id)
+        return question.is_correct(answer_id)
 
 
 class TestService:
@@ -72,7 +76,7 @@ class TestService:
 
         context = {
             'test_name': self.name,
-            'run': self._extract_test_context(request),
+            'run': self._extract_test_context(session=request.session),
         }
         return context
     
@@ -146,14 +150,32 @@ class TestService:
         """Update answered questions"""
 
         if 'answers' in answers:
-            pass
-        return NotImplementedError
+            answer = int(answers['answers'][0])
+            question_id = int(answers['question_id'][0])
+            run = self._update_questions(run, question_id, answer)
+
+        # Update current index
+        run['current_index'] = run['questions'].index(self._get_current_question(run))
+            
+        return run
     
+    def _update_questions(self, run: dict, question_id: int, answer: int):
+        for question in run['questions']:
+            if question['question_id'] == question_id:
+                question['is_answered'] = True
+                question['is_correct'] = self.data.check_answer(
+                    question_id=question_id,
+                    answer_id=answer
+                    )
+        return run
+
     @staticmethod
     def _get_current_question(run):
         """Find first unanswered question"""
-
-        return run['questions'][run['current_index']]
+        
+        for question in run['questions']:
+            if 'is_answered' not in question or not question['is_answered']:
+                return question
     
     @staticmethod
     def _get_form(question):
