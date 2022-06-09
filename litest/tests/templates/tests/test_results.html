@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="container-fluid">
+            <h1>Тест на знание цитат &mdash; результаты</h1>
+        </div>
+    </div>
+</div>
+
+<br />
+
+
+{% for question in run.questions %}
+
+<div class="row">
+
+    <div class="col-md-7">
+        <blockquote>
+            <p>
+            {{ question.text }}
+            </p>
+        </blockquote>
+    </div>
+
+    <div class="col-md-5">
+        {% for answer in question.answers %}
+            {% if answer.0 == question.answer %}
+                {% if question.is_correct %}
+                <div class="alert alert-success">
+                    <span class="glyphicon glyphicon-ok" />
+                {% else %}
+                <div class="alert alert-danger">
+                    <span class="glyphicon glyphicon-remove" />
+                {% endif %}
+                    <span>{{ answer.1 }}</span>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if not question.is_correct %}
+            {% for answer in question.answers %}
+                {% if answer.0 == question.correct_answer %}
+                <div class="alert alert-info">
+                    <span class="glyphicon glyphicon-ok" />
+                    <span>{{ answer.1 }}</span>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+<br />
+<hr />
+<br />
+
+{% endfor %}
+
+{% endblock content %}
