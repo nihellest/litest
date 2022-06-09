@@ -35,6 +35,10 @@ class TestDataService:
     def check_answer(self, question_id: int, answer_id: int) -> bool:
         question = self.model.objects.get(pk=question_id)
         return question.is_correct(answer_id)
+    
+    def get_correct_answer(self, question_id: int) -> int:
+        question = self.model.objects.get(pk=question_id)
+        return question.correct_answer.id
 
 
 class TestService:
@@ -93,8 +97,10 @@ class TestService:
 
         # Store run data to session
         self._write_session_context(session=request.session, run=run)
-
-        form = self._get_form(self._get_current_question(run))
+        if not run['finished']:
+            form = self._get_form(self._get_current_question(run))
+        else:
+            form = None
         
         return {
             'test_name': self.name,
@@ -102,11 +108,23 @@ class TestService:
             'form': form,
         }
     
+    def get_results_context(self, request: HttpRequest) -> Dict[str, Any]:
+        run = self._extract_test_context(session=request.session)
+        return {
+            'test_name': self.name,
+            'run': run,
+        }
+    
     def refresh_context(self, session: SessionBase) -> None:
         """Clear from session test related data"""
 
         if self._session_has_context(session):
             del session[self._session_key]
+
+
+    def is_run_finished(self, session: SessionBase) -> bool:
+        run = self._extract_test_context(session)
+        return 'finished' in run and run['finished']
 
     @property
     def _session_key(self):
@@ -144,6 +162,7 @@ class TestService:
         return {
             'questions': self.data.get_questions(),
             'current_index': 0,
+            'finished': False,
         }
     
     def _update_run(self, run: dict, answers: dict):
@@ -155,7 +174,11 @@ class TestService:
             run = self._update_questions(run, question_id, answer)
 
         # Update current index
-        run['current_index'] = run['questions'].index(self._get_current_question(run))
+        current_question = self._get_current_question(run)
+        if current_question:
+            run['current_index'] = run['questions'].index(current_question)
+        else:
+            run['finished'] = True
             
         return run
     
@@ -163,10 +186,13 @@ class TestService:
         for question in run['questions']:
             if question['question_id'] == question_id:
                 question['is_answered'] = True
+                question['answer'] = answer
                 question['is_correct'] = self.data.check_answer(
                     question_id=question_id,
                     answer_id=answer
                     )
+                if not question['is_correct']:
+                    question['correct_answer'] = self.data.get_correct_answer(question_id)
         return run
 
     @staticmethod
@@ -176,6 +202,7 @@ class TestService:
         for question in run['questions']:
             if 'is_answered' not in question or not question['is_answered']:
                 return question
+        return None
     
     @staticmethod
     def _get_form(question):
