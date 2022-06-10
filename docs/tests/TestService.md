@@ -2,6 +2,8 @@
 
 ## Sequence diagram
 
+[!Sequence Diagram](img/test_service_seqdiag.svg)
+
 ```plantuml
 @startuml
 
