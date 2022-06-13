@@ -1,3 +1,3 @@
-from django.test import TestCase
+# pylint: skip-file
 
-# Create your tests here.
+from django.test import TestCase

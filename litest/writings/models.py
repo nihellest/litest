@@ -1,5 +1,9 @@
-from django.db import models
+"""
+Models module for writings app
+"""
 
+from django.db import models
+from django.conf import settings
 
 class Author(models.Model):
     """Model of authors of writings"""
@@ -12,7 +16,7 @@ class Author(models.Model):
         verbose_name_plural = "Авторы"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class Writing(models.Model):
@@ -26,7 +30,7 @@ class Writing(models.Model):
         verbose_name_plural = "Произведения"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class Character(models.Model):
@@ -43,7 +47,7 @@ class Character(models.Model):
         verbose_name_plural = "Персонажи"
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class CharacterTag(models.Model):
@@ -54,7 +58,7 @@ class CharacterTag(models.Model):
         verbose_name_plural = "Теги персонажа"
 
     def __str__(self) -> str:
-        return self.label
+        return str(self.label)
 
 
 class Quote(models.Model):
@@ -66,14 +70,14 @@ class Quote(models.Model):
     class Meta:
         verbose_name = "Цитата"
         verbose_name_plural = "Цитаты"
-        
+
     @property
     def shorten(self) -> str:
         """Shorten text for a pretty quotes view in lists"""
-        # TODO: Move constant to settings
-        SHORTEN_LENGTH = 9
-        words = self.text.split()
-        return " ".join(words[:SHORTEN_LENGTH]) + ("..." if len(words) > SHORTEN_LENGTH else "")
+
+        shorten_length = settings.APP_LONG_TEXT_SHORTEN_LENGTH
+        words = str(self.text).split()
+        return " ".join(words[:shorten_length]) + ("..." if len(words) > shorten_length else "")
 
     def __str__(self) -> str:
         name = self.name if self.name else self.shorten
