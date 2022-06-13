@@ -51,19 +51,21 @@ class TestService:
     ```python
     {
         'test_name': str,
+        'test_run_link': Optional(str),
         'run': {
             'questions': [
                 {
                     'question_id': int,
                     'text': str,
                     'answers': [(int, str), ...],
-                    'is_answered': bool
-                    'is_correct': Optional(bool)
+                    'is_answered': bool,
+                    'is_correct': Optional(bool),
                 },
                 ...
             ]
             'current_index': int,
             'form': TestForm,
+            'is_finished': Optional(bool),
         }
     }
     ```

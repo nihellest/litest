@@ -6,6 +6,7 @@ import logging
 from typing import Dict, Any
 
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.http import Http404, HttpRequest, HttpResponse
 from django.views.decorators.http import require_http_methods, require_GET
 
@@ -30,6 +31,10 @@ def generic_test_page(request, test_name: str) -> HttpResponse:
 
     service: TestService = get_service(test_name)
     context: Dict[Any] = service.get_page_context(request)
+    context['test_run_link'] = reverse(
+        generic_test_run,
+        kwargs={'test_name': test_name}
+    )
     return render(request, 'tests/test_page.html', context)
 
 
