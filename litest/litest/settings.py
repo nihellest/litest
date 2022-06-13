@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'writings.global.global_context',
             ],
         },
     },
@@ -123,3 +124,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Application settings
+
+APP_LONG_TEXT_SHORTEN_LENGTH = 9
+APP_DEFAULT_TEST_RUN_LENGTH = 3

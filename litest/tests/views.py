@@ -1,3 +1,7 @@
+"""
+Views module for tests app
+"""
+
 import logging
 from typing import Dict, Any
 
@@ -21,7 +25,7 @@ def get_service(test_name: str) -> TestService:
 
 
 @require_GET
-def GenericTestPage(request, test_name: str) -> HttpResponse:
+def generic_test_page(request, test_name: str) -> HttpResponse:
     """View for test's main page"""
 
     service: TestService = get_service(test_name)
@@ -30,30 +34,32 @@ def GenericTestPage(request, test_name: str) -> HttpResponse:
 
 
 @require_http_methods(['GET', 'POST'])
-def GenericTestRun(request: HttpRequest, test_name: str) -> HttpResponse:
+def generic_test_run(request: HttpRequest, test_name: str) -> HttpResponse:
     """View for tests"""
 
     service: TestService = get_service(test_name)
-    
+
     # Is new run?
     if request.method == 'GET' and 'new' in request.GET:
         service.refresh_context(session=request.session)
-        return redirect(GenericTestRun, test_name=test_name)
+        return redirect(generic_test_run, test_name=test_name)
 
     context: Dict[str, Any] = service.get_run_context(request)
     if service.is_run_finished(session=request.session):
-        return redirect(GenericTestResults, test_name=test_name)
+        return redirect(generic_test_results, test_name=test_name)
 
     return render(request, 'tests/test_run.html', context)
 
+
 @require_GET
-def GenericTestResults(request: HttpRequest, test_name: str) -> HttpResponse:
+def generic_test_results(request: HttpRequest, test_name: str) -> HttpResponse:
     """View for test's result page"""
+
     service: TestService = get_service(test_name)
     context = service.get_results_context(request)
 
     # Check that run was finished
     if not service.is_run_finished(session=request.session):
-        return redirect(GenericTestRun, test_name=test_name)
+        return redirect(generic_test_run, test_name=test_name)
 
     return render(request, 'tests/test_results.html', context)

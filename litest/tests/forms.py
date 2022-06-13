@@ -1,5 +1,8 @@
+"""
+Forms module for tests app
+"""
+
 from django import forms
-from .models import QuoteQuestion
 
 
 class QuestionForm(forms.Form):
