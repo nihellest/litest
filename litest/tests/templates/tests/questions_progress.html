@@ -1,0 +1,30 @@
+{% load litest_layout %}
+
+<ul class="pagination">
+{% for question in questions  %}
+    {% if forloop.counter0 == run.current_index %}
+    <li class="active">
+        <span>
+    {% else %}
+    <li class="disabled">
+        <span>
+    {% endif %}
+
+    {% if forloop.counter0 > current_index %}
+        {% glyph 'unchecked' %}
+    {% elif forloop.counter0 == current_index  %}
+        {% glyph 'pencil' %}
+    {% else %}
+        {% if question.is_correct == True %}
+            {% glyph 'ok' %}
+        {% else %}
+            {% glyph 'remove' %}
+        {% endif %}
+    {% endif %}
+            <span>
+                {{ forloop.counter }}
+            </span>
+        </span>
+    </li>
+{% endfor %}
+</ul>

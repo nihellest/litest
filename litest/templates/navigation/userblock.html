@@ -1,0 +1,22 @@
+<ul class="nav navbar-nav navbar-right">
+    {% if user %}
+    <li>
+        <a href="#">
+            <b>{{user.username }}</b>
+        </a>
+    </li>
+    <li>
+        <a href="{{ logout.link }}">
+            ({{ logout.label }})
+        </a>
+    </li>
+    {% else %}
+    <li>
+        <a href="{{ login.link }}">
+            <span class="glyphicon glyphicon-log-in"></span>
+            &nbsp;
+            {{ login.label }}
+        </a>
+    </li>
+    {% endif %}
+</ul>
