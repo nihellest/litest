@@ -12,4 +12,4 @@ class QuestionForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
-        self.fields['answers'].choices = self.question['answers']
+        self.fields['answers'].choices = self.question.get_answers()

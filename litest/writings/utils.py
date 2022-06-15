@@ -48,7 +48,7 @@ def global_context(request: HttpRequest):
 
     user_block = {
         'user': { 
-            'username': request.user.username 
+            'username': request.user.username
         } if request.user.is_authenticated else None,
         'login': NavItem(
             label='Войти',

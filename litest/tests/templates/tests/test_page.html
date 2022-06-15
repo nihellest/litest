@@ -6,7 +6,11 @@
     <div class="well text-center">
     {% if run %}
         <a class="btn btn-primary btn-lg" href="{{ test_run_link }}?new">Начать новый тест</a>
+        {% if run.is_finished %}
+        <a class="btn btn-primary btn-lg" href="{{ test_run_link }}">Посмотреть результаты</a>
+        {% else %}
         <a class="btn btn-primary btn-lg" href="{{ test_run_link }}">Продолжить тест</a>
+        {% endif %}
     {% else %}
         <a class="btn btn-primary btn-lg" href="{{ test_run_link }}?new">Начать тест</a>
     {% endif %}
