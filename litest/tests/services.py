@@ -67,7 +67,10 @@ class TestService:
         answer = self._extract_answer(request=request)
         
         if run is None:
-            run = self.model.generate_run(count=settings.APP_DEFAULT_TEST_RUN_LENGTH)
+            run = self.model.generate_run(
+                count=settings.APP_DEFAULT_TEST_RUN_LENGTH,
+                user=request.user
+            )
         if answer:
             run.set_answer(answer)
 
@@ -141,6 +144,50 @@ class TestService:
         return QuestionForm(question=question)
 
 
+class TestStatisticsService:
+    def __init__(self, model):
+        self.model = model
+
+    def get_runs_per_user(self, user):
+        runs = self.model.objects.filter(user=user)
+        return self.statistics_for_runs(runs)
+
+    def statistics_for_runs(self, runs):
+        # TODO: Move constant to settings
+        LAST_RUNS_COUNT = 10
+        last_runs = runs.order_by('-start_time')[:LAST_RUNS_COUNT]
+        last_runs_statistics = []
+        for run in last_runs:
+            last_runs_statistics.append({
+                'answered_count': run.answered_count,
+                'corrects_count': run.corrects_count,
+                'questions_count': run.questions.count(),
+                'start_time':   run.start_time
+            })
+        return {
+            'test_name': self.model.test_name(),
+            'totals': {
+                'total_runs': {
+                    'label': 'Всего попыток',
+                    'count': len(runs),
+                },
+                'finished_runs': {
+                    'label': 'Законченных попыток',
+                    'count': TestStatisticsService._finished_runs(runs),
+                },
+            },
+            'last_runs': last_runs_statistics,
+        }
+    
+    @staticmethod
+    def _finished_runs(runs):
+        return len([x for x in runs if x.is_finished()])
+
+
 TEST_SERVICES = {
     'quotes': TestService(name='quotes', model=QuotesTestRun),
+}
+
+TEST_STATISTICS_SERVICES = {
+    'quotes': TestStatisticsService(model=QuotesTestRun),
 }

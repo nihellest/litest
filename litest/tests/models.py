@@ -117,8 +117,11 @@ class QuotesTestRun(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     finish_time = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = "Тест на знание цитат"
+
     @staticmethod
-    def generate_run(count: int = 0, user: models=None):
+    def generate_run(count: int = 0, user=None):
         """Return new run with `count` of questions"""
         run = QuotesTestRun(user=user)
         run.save()
@@ -152,6 +155,15 @@ class QuotesTestRun(models.Model):
         question.answer = answer
         question.save()
 
+    @property
+    def corrects_count(self) -> int:
+        corrects = [x for x in self.questions.all() if x.is_correct()]
+        return len(corrects)
+
+    @property
+    def answered_count(self) -> int:
+        answered = [x for x in self.questions.all() if x.is_answered()]
+        return len(answered)
 
     @property
     def as_dict(self) -> Dict[str, Any]:
@@ -169,3 +181,7 @@ class QuotesTestRun(models.Model):
             'questions': questions,
             'current_index': current_index,
         }
+    
+    @staticmethod
+    def test_name():
+        return QuotesTestRun._meta.verbose_name
