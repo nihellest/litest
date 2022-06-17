@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+<h1>{{ username }}</h1>
+
+<h2>Статистика</h2>
+{% for test in statistics %}
+<div class="container">
+    <h3>{{ test.test_name }}</h3>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Общая статистика
+            </div>
+
+            <div class="panel-body">
+                <ul>
+                    {% for stat in test.totals.values %}
+                        <li>
+                            <strong>{{ stat.label }}:</strong>
+                            {{ stat.count }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Последние тесты
+            </div>
+
+            <div class="panel-body text-center">
+                <p>
+                    <strong>Правильно / Отвечено / Всего</strong>
+                </p>
+                <ul class="list-group">
+                    {% for run in test.last_runs %}
+                    <li class="list-group-item">
+                        <h4>
+                        {{ run.corrects_count }} / 
+                        {{ run.answered_count }} /
+                        {{ run.questions_count }}
+                        </h4>
+                        {{ run.start_time|naturaltime }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock content %}

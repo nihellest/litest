@@ -18,9 +18,7 @@ from django.urls import include, path
 import writings.views as writings
 
 urlpatterns = [
-    path('', writings.index_page),
     path('admin/', admin.site.urls),
     path('test/', include('tests.urls')),
-    path('login/', writings.login_page),
-    path('logout/', writings.logout_page),
+    path('', include('writings.urls')),
 ]
